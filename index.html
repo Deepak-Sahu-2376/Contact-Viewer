@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save Contact</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; text-align: center; padding: 50px 20px; background: #f0f2f5; }
+        .card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto; }
+        h1 { margin-bottom: 10px; color: #1a1a1a; }
+        p { color: #666; margin-bottom: 30px; }
+        .btn {
+            background: #007AFF; color: white; padding: 16px 32px;
+            border-radius: 50px; text-decoration: none; font-weight: 600;
+            display: inline-block; font-size: 18px; box-shadow: 0 4px 6px rgba(0,122,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>👤 Contact Shared</h1>
+        <p>Tap below to save this contact to your specific device.</p>
+        <a id="save-btn" class="btn" href="#">Save Contact</a>
+    </div>
+
+    <script>
+        function saveContact() {
+            // Get data from URL Hash (remove the #)
+            const hash = window.location.hash.substring(1);
+            if (!hash) {
+                document.querySelector('p').innerText = "No contact data found.";
+                return;
+            }
+
+            try {
+                // Decode Base64
+                const vcardData = atob(hash);
+                
+                // Create File Blob
+                const blob = new Blob([vcardData], { type: 'text/vcard' });
+                const url = URL.createObjectURL(blob);
+                
+                // Set Button Link
+                const btn = document.getElementById('save-btn');
+                btn.href = url;
+                btn.download = 'contact.vcf';
+                
+                // Auto-click for instant download
+                btn.click();
+            } catch (e) {
+                console.error(e);
+                document.querySelector('p').innerText = "Error decoding contact.";
+            }
+        }
+
+        window.onload = saveContact;
+    </script>
+</body>
+</html>
